@@ -13,40 +13,35 @@
 
 class Bureaucrat {
 public:
-    // Exceptions
-    class GradeTooHighException : public std::exception {
-    public:
-        virtual const char* what() const throw();
-    };
+	class GradeTooHighException : public std::exception {
+	public:
+		virtual const char* what() const throw();
+	};
 
-    class GradeTooLowException : public std::exception {
-    public:
-        virtual const char* what() const throw();
-    };
+	class GradeTooLowException : public std::exception {
+	public:
+		virtual const char* what() const throw();
+	};
 
-    // Orthodox Canonical Form
-    Bureaucrat();                                  // default
-    Bureaucrat(const std::string& name, int grade); // param
-    Bureaucrat(const Bureaucrat& other);           // copy
-    ~Bureaucrat();
-    Bureaucrat& operator=(const Bureaucrat& other);
+	Bureaucrat();
+	Bureaucrat(const std::string& name, int grade);
+	Bureaucrat(const Bureaucrat& other);
+	~Bureaucrat();
+	Bureaucrat& operator=(const Bureaucrat& other);
 
-    // Getters
-    const std::string& getName() const;
-    int getGrade() const;
+	const std::string& getName() const;
+	int getGrade() const;
 
-    // Operations
-    void incrementGrade(); // improves grade: 3 -> 2
-    void decrementGrade(); // lowers grade: 3 -> 4
+	void incrementGrade();
+	void decrementGrade();
 
 private:
-    const std::string name;
-    int grade;
+	const std::string name;
+	int grade;
 
-    void validateGrade(int g) const;
+	void validateGrade(int g) const;
 };
 
-// non-member overload for printing
 std::ostream& operator<<(std::ostream& os, const Bureaucrat& b);
 
-#endif // BUREAUCRAT_HPP
+#endif
