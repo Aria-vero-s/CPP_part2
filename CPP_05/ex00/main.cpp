@@ -2,6 +2,8 @@
 #include <iostream>
 
 int main() {
+	std::cout << BOLD << "----- TEST ------" << RESET << std::endl;
+	std::cout << std::endl;
 	try {
 		Bureaucrat a("Alice", 2);
 		std::cout << CYAN << a << std::endl << RESET;
@@ -13,7 +15,7 @@ int main() {
 		a.incrementGrade();
 	}
 	catch (std::exception& e) {
-		std::cout << RED << "Exception caught: " << e.what() << std::endl << RESET;
+		std::cout << RED << "Exception caught: " << RESET << BOLD << e.what() << std::endl << RESET;
 	}
 
 	try {
@@ -21,7 +23,7 @@ int main() {
 		std::cout << b << std::endl;
 	}
 	catch (std::exception& e) {
-		std::cout << RED << "Exception caught during construction: " << e.what() << std::endl << RESET;
+		std::cout << RED << "Exception caught during construction: " << RESET << BOLD << e.what() << std::endl << RESET;
 	}
 
 	try {
@@ -32,8 +34,9 @@ int main() {
 		c.decrementGrade();
 	}
 	catch (std::exception& e) {
-		std::cout << RED << "Exception caught: " << e.what() << std::endl << RESET;
+		std::cout << RED << "Exception caught: " << RESET << BOLD << e.what() << std::endl << RESET;
 	}
-
+	std::cout << std::endl;
+	std::cout << BOLD << "----- END TEST ------" << RESET << std::endl;
 	return 0;
 }
