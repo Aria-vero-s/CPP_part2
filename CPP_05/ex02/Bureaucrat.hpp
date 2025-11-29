@@ -13,7 +13,7 @@
 #define CYAN    "\033[36m"
 #define BOLD    "\033[1m"
 
-class Form;
+class AForm;
 
 class Bureaucrat {
 public:
@@ -21,7 +21,6 @@ public:
 	public:
 		virtual const char* what() const throw();
 	};
-
 	class GradeTooLowException : public std::exception {
 	public:
 		virtual const char* what() const throw();
@@ -39,7 +38,8 @@ public:
 	void incrementGrade();
 	void decrementGrade();
 
-	void signForm(Form& f) const;
+	void signForm(AForm& form) const;
+	void executeForm(const AForm& form) const;
 
 private:
 	const std::string name;

@@ -1,10 +1,10 @@
 #include "Bureaucrat.hpp"
-#include "Form.hpp"
+#include "AForm.hpp"
+#include <iostream>
 
 const char* Bureaucrat::GradeTooHighException::what() const throw() {
 	return "grade is too high";
 }
-
 const char* Bureaucrat::GradeTooLowException::what() const throw() {
 	return "grade is too low";
 }
@@ -44,19 +44,28 @@ void Bureaucrat::incrementGrade() {
 	validateGrade(grade - 1);
 	--grade;
 }
-
 void Bureaucrat::decrementGrade() {
 	validateGrade(grade + 1);
 	++grade;
 }
 
-void Bureaucrat::signForm(Form& f) const {
-    try {
-        f.beSigned(*this);
-        std::cout << GREEN << name << " signed " << f << RESET << std::endl;
-    } catch (std::exception& e) {
-        std::cout << RED << name << " can’t sign " << f << " because " << e.what() << RESET << std::endl;
-    }
+void Bureaucrat::signForm(AForm& form) const {
+	try {
+		form.beSigned(*this);
+		std::cout << GREEN << name << " signed " << BOLD << form << RESET << std::endl;
+	}
+	catch (std::exception& e) {
+		std::cout << RED << name << " couldn’t sign " << BOLD << form << RESET << RED << " because " << e.what() << std::endl;
+	}
+}
+
+void Bureaucrat::executeForm(const AForm& form) const {
+	try {
+		form.execute(*this);
+		std::cout << GREEN << name << " executed " << form << RESET << std::endl;
+	} catch (std::exception& e) {
+		std::cout << RED << name << " couldn't execute " << BOLD << form << RESET << RED << " because " << e.what() << RESET << std::endl;
+	}
 }
 
 std::ostream& operator<<(std::ostream& os, const Bureaucrat& b) {
