@@ -24,7 +24,8 @@ Intern::Intern(const Intern& other) {
 Intern::~Intern() {}
 
 Intern& Intern::operator=(const Intern& other) {
-	(void)other; return *this;
+	(void)other;
+	return *this;
 }
 
 AForm* Intern::makeForm(const std::string& formName, const std::string& target) const {
