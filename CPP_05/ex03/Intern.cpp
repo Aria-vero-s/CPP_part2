@@ -2,18 +2,7 @@
 #include "ShrubberyCreationForm.hpp"
 #include "RobotomyRequestForm.hpp"
 #include "PresidentialPardonForm.hpp"
-
-typedef AForm* (*FormCreator)(const std::string& target);
-
-static AForm* createShrubbery(const std::string& target) {
-	return new ShrubberyCreationForm(target);
-}
-static AForm* createRobotomy(const std::string& target) {
-	return new RobotomyRequestForm(target);
-}
-static AForm* createPardon(const std::string& target) {
-	return new PresidentialPardonForm(target);
-}
+#include <iostream>
 
 Intern::Intern() {}
 
@@ -29,36 +18,25 @@ Intern& Intern::operator=(const Intern& other) {
 }
 
 AForm* Intern::makeForm(const std::string& formName, const std::string& target) const {
-	const std::string names[] = {
+	const std::string formNames[3] = {
 		"shrubbery creation",
-		"shrubbery",
 		"robotomy request",
-		"robotomy",
-		"presidential pardon",
-		"presidential"
+		"presidential pardon"
 	};
 
-	const FormCreator creators[] = {
-		createShrubbery,
-		createShrubbery,
-		createRobotomy,
-		createRobotomy,
-		createPardon,
-		createPardon
-	};
-
-	const std::size_t count = sizeof(names) / sizeof(names[0]);
-	std::size_t i = 0;
-
-	while (i < count) {
-		if (names[i] == formName) {
-			AForm* form = creators[i](target);
+	int i = 0;
+	while (i < 3) {
+		if (formName == formNames[i]) {
 			std::cout << "Intern creates " << formName << std::endl;
-			return form;
+			switch (i) {
+				case 0: return new ShrubberyCreationForm(target);
+				case 1: return new RobotomyRequestForm(target);
+				case 2: return new PresidentialPardonForm(target);
+			}
 		}
 		++i;
 	}
 
-	std::cout << "Intern couldn't create \"" << formName << "\": unknown form name" << std::endl;
+	std::cout << "Error: Form \"" << formName << "\" unknown" << std::endl;
 	return NULL;
 }
