@@ -25,8 +25,11 @@ Array<T>::Array(Array const & other) : _data(NULL), _size(0) {
 	}
 	_data = new T[other._size]();
 	_size = other._size;
-	for (unsigned int i = 0; i < _size; ++i)
+	unsigned int i = 0;
+	while (i < _size) {
 		_data[i] = other._data[i];
+		++i;
+	}
 }
 
 template<typename T>
@@ -37,8 +40,11 @@ Array<T> & Array<T>::operator=(Array const & other) {
 	T * newData = NULL;
 	if (other._size > 0) {
 		newData = new T[other._size]();
-		for (unsigned int i = 0; i < other._size; ++i)
+		unsigned int i = 0;
+		while (i < other._size) {
 			newData[i] = other._data[i];
+			++i;
+		}
 	}
 
 	delete [] _data;
