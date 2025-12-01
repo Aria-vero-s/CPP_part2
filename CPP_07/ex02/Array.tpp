@@ -1,9 +1,6 @@
 #ifndef ARRAY_TPP
 #define ARRAY_TPP
 
-#include "Array.hpp"
-#include <sstream>
-
 template<typename T>
 Array<T>::Array() : _data(NULL), _size(0) {}
 
