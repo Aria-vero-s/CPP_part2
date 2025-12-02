@@ -43,7 +43,7 @@ int main()
 			small.addNumber(1);
 			small.addNumber(2);
 			small.addNumber(3);
-			// this should throw
+			// this throws
 			small.addNumber(4);
 		}
 		catch (const std::exception & e) {
