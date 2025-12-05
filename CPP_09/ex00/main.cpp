@@ -6,15 +6,12 @@ int main(int argc, char **argv) {
 		std::cerr << "Use: ./btc <input_file>" << std::endl;
 		return 1;
 	}
-
 	BitcoinExchange btc;
 	bool ok = btc.loadDatabase("data.csv");
-	if (!ok) ok = btc.loadDatabase("bitcoin.csv");
 	if (!ok) {
-		std::cerr << "Error: could not open database file (data.csv or bitcoin.csv)." << std::endl;
+		std::cerr << "Error: could not open file data.csv" << std::endl;
 		return 1;
 	}
-
 	btc.processInput(argv[1]);
 	return 0;
 }
