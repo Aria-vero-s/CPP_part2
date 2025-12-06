@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 	gettimeofday(&t2, NULL);
 	double timeDeqUs = timeval_diff_us(t1, t2);
 	std::cout << "After: ";
-	size_t i = 0;
+	i = 0;
 	while (i < sortedVec.size()) {
 		if (i)
 			std::cout << ' ';
