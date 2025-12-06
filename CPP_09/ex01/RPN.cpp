@@ -1,7 +1,7 @@
 #include "RPN.hpp"
 #include <sstream>
 #include <string>
-#include <vector>
+#include <stack>
 #include <cctype>
 
 RPN::RPN() {}
@@ -11,9 +11,7 @@ static bool isOperator(const std::string &tok) {
 	if (tok.size() != 1)
 		return false;
 	char c = tok[0];
-	if (c == '+' || c == '-' || c == '*' || c == '/')
-		return true;
-	return false;
+	return (c == '+' || c == '-' || c == '*' || c == '/');
 }
 
 static bool parseNumber(const std::string &tok, long &value) {
@@ -33,21 +31,21 @@ static bool parseNumber(const std::string &tok, long &value) {
 bool RPN::evaluate(const std::string &expr, long &result) const {
 	std::istringstream ss(expr);
 	std::string token;
-	std::vector<long> stack;
+	std::stack<long> st;
 
 	while (ss >> token) {
 		long val;
 		if (parseNumber(token, val)) {
-			stack.push_back(val);
+			st.push(val);
 			continue;
 		}
 		if (isOperator(token)) {
-			if (stack.size() < 2)
+			if (st.size() < 2)
 				return false;
-			long b = stack.back();
-			stack.pop_back();
-			long a = stack.back();
-			stack.pop_back();
+			long b = st.top();
+			st.pop();
+			long a = st.top();
+			st.pop();
 			long res = 0;
 			switch (token[0]) {
 				case '+': res = a + b; break;
@@ -61,14 +59,14 @@ bool RPN::evaluate(const std::string &expr, long &result) const {
 				default:
 					return false;
 			}
-			stack.push_back(res);
+			st.push(res);
 			continue;
 		}
 		return false;
 	}
 
-	if (stack.size() != 1)
+	if (st.size() != 1)
 		return false;
-	result = stack.back();
+	result = st.top();
 	return true;
 }
