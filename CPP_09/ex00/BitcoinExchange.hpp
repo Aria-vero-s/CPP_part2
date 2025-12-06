@@ -15,6 +15,7 @@ public:
 private:
 	std::map<std::string, double> _rates;
 
+	void BitcoinExchange::handleLine(const std::string &line) const;
 	static std::string trim(const std::string &s);
 	static bool validDate(const std::string &date);
 	static bool isLeap(int year);

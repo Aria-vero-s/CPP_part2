@@ -94,97 +94,99 @@ bool BitcoinExchange::loadDatabase(const std::string &dbFilename) {
 	return !_rates.empty();
 }
 
+void BitcoinExchange::handleLine(const std::string &line) const {
+	if (line.empty())
+		return;
+
+	std::size_t pipe = line.find('|');
+	if (pipe == std::string::npos) {
+		std::cout << "Error: bad input : " << line << std::endl;
+		return;
+	}
+
+	std::string date = trim(line.substr(0, pipe));
+	std::string valueStr = trim(line.substr(pipe + 1));
+
+	if (!validDate(date)) {
+		std::cout << "Error: date invalid : " << date << std::endl;
+		return;
+	}
+
+	double value = 0.0;
+	{
+		std::istringstream vs(valueStr);
+		if (!(vs >> value)) {
+			std::cout << "Error: value invalid : " << valueStr << std::endl;
+			return;
+		}
+		char c;
+		if (vs >> c) {
+			std::cout << "Error: value invalid : " << valueStr << std::endl;
+			return;
+		}
+	}
+
+	if (value < 0) {
+		std::cout << "Error: not a positive number." << std::endl;
+		return;
+	}
+	if (value > 1000) {
+		std::cout << "Error: too large a number." << std::endl;
+		return;
+	}
+	if (_rates.empty()) {
+		std::cout << "Error." << std::endl;
+		return;
+	}
+
+	std::map<std::string, double>::const_iterator it = _rates.lower_bound(date);
+	if (it == _rates.end()) {
+		std::map<std::string, double>::const_iterator it2 = _rates.end();
+		--it2;
+		it = it2;
+	} else if (it->first != date) {
+		if (it == _rates.begin()) {
+			std::cout << "Error: date too early : " << date << std::endl;
+			return;
+		}
+		--it;
+	}
+
+	double rate = it->second;
+	double result = value * rate;
+
+	std::cout << date << " => " << value << " = ";
+	std::ostringstream out;
+	out << std::fixed << std::setprecision(6) << result;
+	std::string r = out.str();
+	while (!r.empty() && r.find('.') != std::string::npos && (r[r.size() - 1] == '0'))
+		r.erase(r.size() - 1);
+	if (!r.empty() && (r[r.size() - 1] == '.'))
+		r.erase(r.size() - 1);
+	std::cout << r << std::endl;
+}
+
 void BitcoinExchange::processInput(const std::string &inputFilename) const {
 	std::ifstream f(inputFilename.c_str());
 	if (!f) {
 		std::cerr << "Error: could not open file." << std::endl;
 		return;
 	}
+
 	std::string line;
-	std::streampos pos = f.tellg();
 	if (std::getline(f, line)) {
-		std::string::size_type pipe = line.find('|');
+		std::size_t pipe = line.find('|');
 		if (pipe != std::string::npos) {
-			std::string left = trim(line.substr(0, pipe));
+			std::string left  = trim(line.substr(0, pipe));
 			std::string right = trim(line.substr(pipe + 1));
-			if (left == "date" && (right == "value")) {
-				;
+			if (!(left == "date" && right == "value")) {
+				handleLine(line);
 			}
-			else {
-				f.clear();
-				f.seekg(pos);
-			}
-		}
-		else {
-			f.clear();
-			f.seekg(pos);
+		} else {
+			handleLine(line);
 		}
 	}
 	while (std::getline(f, line)) {
-		if (line.empty())
-			continue;
-		std::string::size_type pipe = line.find('|');
-		if (pipe == std::string::npos) {
-			std::cout << "Error: bad input : " << line << std::endl;
-			continue;
-		}
-		std::string date = trim(line.substr(0, pipe));
-		std::string valueStr = trim(line.substr(pipe + 1));
-		if (!validDate(date)) {
-			std::cout << "Error: date invalid : " << date << std::endl;
-			continue;
-		}
-		double value = 0.0;
-		{
-			std::istringstream vs(valueStr);
-			if (!(vs >> value)) {
-				std::cout << "Error: value invalid : " << valueStr << std::endl;
-				continue;
-			}
-			char c;
-			if (vs >> c) {
-				std::cout << "Error: value invalid : " << valueStr << std::endl;
-				continue;
-			}
-		}
-		if (value < 0) {
-			std::cout << "Error: not a positive number." << std::endl;
-			continue;
-		}
-		if (value > 1000) {
-			std::cout << "Error: too large a number." << std::endl;
-			continue;
-		}
-		if (_rates.empty()) {
-			std::cout << "Error." << std::endl;
-			continue;
-		}
-		std::map<std::string, double>::const_iterator it = _rates.lower_bound(date);
-		if (it == _rates.end()) {
-			std::map<std::string, double>::const_iterator it2 = _rates.end();
-			--it2;
-			it = it2;
-		}
-		else if (it->first == date) {
-			;
-		}
-		else {
-			if (it == _rates.begin()) {
-				std::cout << "Error: date too early : " << date << std::endl;
-				continue;
-			}
-			--it;
-		}
-		double rate = it->second;
-		double result = value * rate;
-		std::cout << date << " => " << value << " = ";
-		std::ostringstream out;
-		out << std::fixed << std::setprecision(6) << result;
-		std::string r = out.str();
-		while (!r.empty() && r.find('.') != std::string::npos && (r[r.size() - 1] == '0'))
-			r.erase(r.size() - 1);
-		if (!r.empty() && (r[r.size() - 1] == '.'))
-			r.erase(r.size() - 1);
-		std::cout << r << std::endl;
+		handleLine(line);
 	}
 }
