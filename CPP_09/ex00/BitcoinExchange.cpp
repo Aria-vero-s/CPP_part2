@@ -97,32 +97,21 @@ bool BitcoinExchange::loadDatabase(const std::string &dbFilename) {
 void BitcoinExchange::handleLine(const std::string &line) const {
 	if (line.empty())
 		return;
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 	std::size_t pipe = line.find('|');
 	if (pipe == std::string::npos) {
 		std::cout << "Error: bad input : " << line << std::endl;
 		return;
 	}
-<<<<<<< Updated upstream
 
 	std::string date = trim(line.substr(0, pipe));
 	std::string valueStr = trim(line.substr(pipe + 1));
 
-=======
-	std::string date = trim(line.substr(0, pipe));
-	std::string valueStr = trim(line.substr(pipe + 1));
->>>>>>> Stashed changes
 	if (!validDate(date)) {
 		std::cout << "Error: date invalid : " << date << std::endl;
 		return;
 	}
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 	double value = 0.0;
 	{
 		std::istringstream vs(valueStr);
@@ -136,10 +125,7 @@ void BitcoinExchange::handleLine(const std::string &line) const {
 			return;
 		}
 	}
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 	if (value < 0) {
 		std::cout << "Error: not a positive number." << std::endl;
 		return;
@@ -152,26 +138,20 @@ void BitcoinExchange::handleLine(const std::string &line) const {
 		std::cout << "Error." << std::endl;
 		return;
 	}
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 	std::map<std::string, double>::const_iterator it = _rates.lower_bound(date);
 	if (it == _rates.end()) {
 		std::map<std::string, double>::const_iterator it2 = _rates.end();
 		--it2;
 		it = it2;
-	} else if (it->first != date) {
+	}
+	else if (it->first != date) {
 		if (it == _rates.begin()) {
 			std::cout << "Error: date too early : " << date << std::endl;
 			return;
 		}
 		--it;
 	}
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 	double rate = it->second;
 	double result = value * rate;
 
@@ -192,34 +172,17 @@ void BitcoinExchange::processInput(const std::string &inputFilename) const {
 		std::cerr << "Error: could not open file." << std::endl;
 		return;
 	}
-
 	std::string line;
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 	if (std::getline(f, line)) {
 		std::size_t pipe = line.find('|');
 		if (pipe != std::string::npos) {
 			std::string left  = trim(line.substr(0, pipe));
 			std::string right = trim(line.substr(pipe + 1));
-<<<<<<< Updated upstream
-			if (!(left == "date" && right == "value")) {
-				handleLine(line);
-			}
-		} else {
-			handleLine(line);
-		}
-	}
-	while (std::getline(f, line)) {
-		handleLine(line);
-=======
 			if (!(left == "date" && right == "value"))
 				handleLine(line);
 		}
 		else
 			handleLine(line);
->>>>>>> Stashed changes
 	}
 	while (std::getline(f, line))
 		handleLine(line);
